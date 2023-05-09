@@ -1,0 +1,82 @@
+server:
+  port: 8180
+
+spring:
+  profiles.active: dev
+  application.name: gateway-project
+  main:
+    web-application-type: reactive
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          "[/**]":
+            maxAge: 3600
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - PUT
+              - POST
+              - PATCH
+              - DELETE
+            allowedHeaders:
+              - x-requested-with
+              - Content-Type
+              - Authorization
+              - credential
+              - X-XSRF-TOKEN
+              - userPassword
+              - USER_TYPE
+            exposedHeaders:
+              - Page
+              - ElementsPerPage
+              - TotalPages
+              - TotalElements
+              - TotalElementsOnPage
+              - total
+              - X-Total-Count
+              - X-Request-ID
+              - Token
+              - USER_AUTH_TEMPORARY_TOKEN
+              - ACCESS_TOKEN
+              - USER_TYPE
+
+  ##Mysql
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/user-project
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 10000
+      maxLifetime: 60000
+      maximumPoolSize: 4
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: loggers
+  endpoint:
+    loggers:
+      enabled: true
+---
+
+jwt:
+  secret: r5u8x/A?D(G+KbPeSgVkYp3s6v9y$B&E
+  expiration: 100000
