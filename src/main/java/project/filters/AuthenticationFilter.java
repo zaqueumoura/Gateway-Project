@@ -1,33 +1,33 @@
 package project.filters;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
+import project.errors.UnauthorizedException;
 import reactor.core.publisher.Mono;
+
 
 public class AuthenticationFilter implements GatewayFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+        String header = exchange.getRequest().getHeaders().getFirst("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+        if (header == null || !header.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Token Iválido");
         }
 
-        String token = authHeader.substring(7);
+        String token = header.substring(7);
 
         try {
             Claims claims = Jwts.parser().setSigningKey("r5u8x/A?D(G+KbPeSgVkYp3s6v9y$B&E").parseClaimsJws(token).getBody();
             exchange.getRequest().mutate().header("documentNumber", claims.getSubject());
-        } catch (JwtException | IllegalArgumentException e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+        } catch (ExpiredJwtException e){
+            throw new UnauthorizedException("Token Expirado");
+        }
+        catch (JwtException | IllegalArgumentException e) {
+            throw new UnauthorizedException("Token inválido");
         }
 
         return chain.filter(exchange);
