@@ -24,6 +24,10 @@ public class GatewayConfig {
                         .path("/user/create")
                         .filters(f -> f.filter(new AuthenticationFilter()))
                         .uri("http://localhost:8181/user/create"))
+                .route("user-delete", r -> r
+                        .path("/user/delete/**")
+                        .filters(f -> f.filter(new AuthenticationFilter()))
+                        .uri("http://localhost:8181/user/delete"))
                 .build();
     }
 }

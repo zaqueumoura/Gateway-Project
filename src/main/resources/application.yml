@@ -7,47 +7,6 @@ spring:
   main:
     web-application-type: reactive
 
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lowerCaseServiceId: true
-
-      globalcors:
-        add-to-simple-url-handler-mapping: true
-        cors-configurations:
-          "[/**]":
-            maxAge: 3600
-            allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - PUT
-              - POST
-              - PATCH
-              - DELETE
-            allowedHeaders:
-              - x-requested-with
-              - Content-Type
-              - Authorization
-              - credential
-              - X-XSRF-TOKEN
-              - userPassword
-              - USER_TYPE
-            exposedHeaders:
-              - Page
-              - ElementsPerPage
-              - TotalPages
-              - TotalElements
-              - TotalElementsOnPage
-              - total
-              - X-Total-Count
-              - X-Request-ID
-              - Token
-              - USER_AUTH_TEMPORARY_TOKEN
-              - ACCESS_TOKEN
-              - USER_TYPE
-
   ##Mysql
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/user-project
